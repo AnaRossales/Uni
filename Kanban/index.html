@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Task Management</title>
+    <link rel="stylesheet" href="style.css">
+    <?php include 'tasks.php'; ?>
+</head>
+<body>
+    <h1 style="text-align:center;">Kanban Task Management</h1>
+    <div class="kanban-board">
+        <div class="column" id="todo">
+            <h2>Por Hacer</h2>
+            <?php echo getTasks('todo'); ?>
+        </div>
+        <div class="column" id="in-progress">
+            <h2>En Progreso</h2>
+            <?php echo getTasks('in-progress'); ?>
+        </div>
+        <div class="column" id="done">
+            <h2>Hecho</h2>
+            <?php echo getTasks('done'); ?>
+        </div>
+    </div>
+</body>
+</html>
