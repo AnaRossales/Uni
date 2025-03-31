@@ -4,11 +4,32 @@ body {
     padding: 0;
     background-color: #f4f4f4;
 }
+
+.header {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.h1-gris-oscuro {
+    color: #5e5e5e; 
+    letter-spacing: 0.1em;
+    font-weight: 300; 
+    font-size: 15px;
+    margin-top: 0; 
+}
+
+.kanban-logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 0; 
+}
+
 .kanban-board {
     display: flex;
     justify-content: space-around;
     padding: 20px;
 }
+
 .column {
     width: 30%;
     background-color: #fff;
@@ -16,14 +37,23 @@ body {
     margin: 5px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-height: 300px;
+    border: 1px #ccc;
 }
+
 .column h2 {
     text-align: center;
 }
+
 .task {
-    background-color: #e0e0e0;
-    margin: 5px 0;
-    padding: 8px;
-    border-radius: 5px;
+    background-color: #f0f0f0;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
     cursor: move;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.task p {
+    margin: 5px 0;
 }

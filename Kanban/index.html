@@ -2,26 +2,31 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kanban Task Management</title>
+    <title>Sistema Kanban</title>
     <link rel="stylesheet" href="style.css">
-    <?php include 'tasks.php'; ?>
 </head>
 <body>
-    <h1 style="text-align:center;">Kanban Task Management</h1>
+    <div class="header">
+        <img src="img/igiris.png" alt="Logo Kanban" class="kanban-logo"> 
+        <h1 class="h1-gris-oscuro" >Sistema Kanban</h1>
+    </div>
     <div class="kanban-board">
-        <div class="column" id="todo">
+        <div class="column" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>Por Hacer</h2>
-            <?php echo getTasks('todo'); ?>
+            <div class="task-container"></div>
         </div>
-        <div class="column" id="in-progress">
+
+        <div class="column" id="in-progress" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>En Progreso</h2>
-            <?php echo getTasks('in-progress'); ?>
+            <div class="task-container"></div> 
         </div>
-        <div class="column" id="done">
+
+        <div class="column" id="done" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>Hecho</h2>
-            <?php echo getTasks('done'); ?>
+            <div class="task-container"></div> 
         </div>
     </div>
+    <script src="tasks.js"></script>
 </body>
 </html>
+
