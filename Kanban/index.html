@@ -14,19 +14,41 @@
         <div class="column" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>Por Hacer</h2>
             <div class="task-container"></div>
+            <center><button onclick="openTaskModal()">+</button></center>
         </div>
 
         <div class="column" id="in-progress" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>En Progreso</h2>
             <div class="task-container"></div> 
+            <center><button onclick="openTaskModal()">+</button></center>
         </div>
 
         <div class="column" id="done" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>Hecho</h2>
             <div class="task-container"></div> 
+            <center><button onclick="openTaskModal()">+</button></center>
         </div>
     </div>
     <script src="tasks.js"></script>
+
+
+    <div id="taskModal" style="display:none;">
+        <div>
+            <h3>Agregar Tarea</h3>
+            <label>Nombre:</label>
+            <input type="text" id="taskName">
+            <label>Descripción:</label>
+            <input type="text" id="taskDescription">
+            <label>Fecha de Inicio:</label>
+            <input type="date" id="taskStartDate">
+            <label>Fecha de Fin:</label>
+            <input type="date" id="taskEndDate">
+            <label>Responsable:</label>
+            <input type="text" id="taskResponsible">
+            <button onclick="addTask()">Guardar</button>
+            <button onclick="closeTaskModal()">Cerrar</button>
+        </div>
+    </div>    
 </body>
 </html>
 
