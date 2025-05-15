@@ -1,11 +1,18 @@
+//--------------------------------------------------------------
+// PASO 1: FUNCIONES BÁSICAS PARA DRAG & DROP
+//--------------------------------------------------------------
+
+// Permite soltar elementos en columnas
 function allowDrop(event) {
     event.preventDefault();
 }
 
+// Guarda el ID de la tarea arrastrada
 function drag(event) {
     event.dataTransfer.setData("taskId", event.target.getAttribute('data-id'));
 }
 
+// Cuando se suelta la tarea en una columna
 function drop(event) {
     event.preventDefault();
     const taskId = event.dataTransfer.getData("taskId");
@@ -16,12 +23,17 @@ function drop(event) {
     updateTaskStatus(taskId, column.id);
 }
 
+//--------------------------------------------------------------
+// PASO 2: ABRIR Y CERRAR EL FORMULARIO (MODAL) DE TAREA
+//--------------------------------------------------------------
+
 function openTaskModal() {
     document.getElementById('taskModal').classList.add('active');
 }
 
 function closeTaskModal() {
     document.getElementById('taskModal').classList.remove('active');
+    // Limpiar campos del formulario
     document.getElementById('taskName').value = '';
     document.getElementById('taskDescription').value = '';
     document.getElementById('taskStartDate').value = '';
@@ -30,14 +42,18 @@ function closeTaskModal() {
     editingTaskId = null;
 }
 
+//--------------------------------------------------------------
+// PASO 3: AGREGAR O EDITAR UNA TAREA
+//--------------------------------------------------------------
+
 function addTask() {
     const name = document.getElementById('taskName').value;
     const description = document.getElementById('taskDescription').value;
     const startDate = document.getElementById('taskStartDate').value;
     const endDate = document.getElementById('taskEndDate').value;
     const responsible = document.getElementById('taskResponsible').value;
-    const id = editingTaskId || Date.now().toString();
-    const columnId = 'todo';
+    const id = editingTaskId || Date.now().toString(); // Si se edita, se conserva el ID
+    const columnId = 'todo'; // Nueva tarea siempre va a "Por hacer"
 
     if (editingTaskId) {
         const oldTask = document.querySelector(`[data-id="${editingTaskId}"]`);
@@ -49,6 +65,10 @@ function addTask() {
     closeTaskModal();
 }
 
+//--------------------------------------------------------------
+// PASO 4: CREAR UNA TAREA EN EL DOM
+//--------------------------------------------------------------
+
 function createTask(columnId, name, description, startDate, endDate, responsible, id, subtasks = []) {
     const column = document.getElementById(columnId);
     const task = document.createElement('div');
@@ -57,50 +77,71 @@ function createTask(columnId, name, description, startDate, endDate, responsible
     task.setAttribute('data-id', id);
     task.addEventListener('dragstart', drag);
 
-    const today = new Date();
-    const end = new Date(endDate);
-    today.setHours(0,0,0,0);
-    end.setHours(0,0,0,0);
-    let nameColor = '';
-
-    if (end < today) {
-        nameColor = 'red';
-    } else if (end.getTime() === today.getTime()) {
-        nameColor = 'orange';
-    }
-    
-
+    // Evaluar fechas
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const fechaFin = new Date(endDate);
+    fechaFin.setHours(0, 0, 0, 0);
+    const diffDias = Math.floor((fechaFin - hoy) / (1000 * 60 * 60 * 24));
     const esHecho = columnId === 'done';
 
-    const subtasksHTML = subtasks.map(sub => `
-        <li data-subtask-id="${sub.id}">
-            <input type="checkbox" ${sub.completed || esHecho ? 'checked' : ''} ${esHecho ? 'disabled' : ''}>
-            <span contenteditable="${!esHecho}" 
-                  style="${esHecho ? 'text-decoration: line-through; color: gray;' : ''}"
-                  onblur="editSubtask('${id}', '${sub.id}', this.innerText)">
-                  ${sub.text}
-            </span>
-            ${!esHecho ? `<button onclick="deleteSubtask('${id}', '${sub.id}')">X</button>` : ''}
-        </li>
-    `).join('');
+    // Estilos según vencimiento
+    let nameColor = '';
+    let textoClass = '';
+    if (esHecho) {
+        nameColor = 'gray';
+        textoClass = 'texto-gris';
+    } else if (diffDias < 0) {
+        nameColor = 'red';
+    } else if (diffDias <= 7) {
+        nameColor = 'orange';
+    } else {
+        nameColor = 'green';
+    }
 
-    task.innerHTML = `
+    // HTML general
+    let contenidoTarea = `
         <strong style="color: ${nameColor}">${name}</strong>
-        <p>${description}</p>
-        <p>Inicio: ${startDate}</p>
-        <p>Final: ${endDate}</p>
-        <p>Responsable: ${responsible}</p>
-        <ul class="subtask-list">${subtasksHTML}</ul>
-        ${!esHecho ? `<input type="text" placeholder="Nueva subtarea..." onkeydown="if(event.key === 'Enter') addSubtask('${id}', this)">` : ''}
-        <div class="task-actions">
-            <button class="circle-btn edit" onclick="editTask('${id}')">Editar</button>
-            <button class="circle-btn delete" onclick="deleteTask('${id}')">Eliminar</button>
+        <div class="${textoClass}">
+            <p>${description}</p>
+            <p>Inicio: ${startDate}</p>
+            <p>Final: ${endDate}</p>
+            <p>Responsable: ${responsible}</p>
         </div>
     `;
 
+    // Si ya está terminada
+    if (esHecho) {
+        contenidoTarea += `<p class="tarea-terminada">✓ Terminada</p>`;
+    } else {
+        const subtasksHTML = subtasks.map(sub => `
+            <li data-subtask-id="${sub.id}">
+                <input type="checkbox" ${sub.completed ? 'checked' : ''} onclick="toggleSubtask('${id}', '${sub.id}')">
+                <span contenteditable="true" onblur="editSubtask('${id}', '${sub.id}', this.innerText)">${sub.text}</span>
+                <button onclick="deleteSubtask('${id}', '${sub.id}')">X</button>
+            </li>
+        `).join('');
+
+        contenidoTarea += `
+            <ul class="subtask-list">${subtasksHTML}</ul>
+            <input type="text" placeholder="Nueva subtarea..." onkeydown="if(event.key === 'Enter') addSubtask('${id}', this)">
+            <div class="task-actions">
+                <button class="circle-btn edit" onclick="editTask('${id}')">Editar</button>
+                <button class="circle-btn delete" onclick="deleteTask('${id}')">Eliminar</button>
+            </div>
+        `;
+    }
+
+    task.innerHTML = contenidoTarea;
     column.querySelector('.task-container').appendChild(task);
+
+    // Guardar en localStorage
     saveTask({ columnId, name, description, startDate, endDate, responsible, id, subtasks });
 }
+
+//--------------------------------------------------------------
+// PASO 5: GUARDAR UNA TAREA EN LOCALSTORAGE
+//--------------------------------------------------------------
 
 function saveTask(task) {
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -112,6 +153,10 @@ function saveTask(task) {
     }
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
+
+//--------------------------------------------------------------
+// PASO 6: CARGAR TODAS LAS TAREAS EN PANTALLA
+//--------------------------------------------------------------
 
 function loadTasks() {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -129,10 +174,15 @@ function loadTasks() {
     });
 }
 
+// Limpiar y volver a cargar
 function reloadTasks() {
     document.querySelectorAll('.task-container').forEach(c => c.innerHTML = '');
     loadTasks();
 }
+
+//--------------------------------------------------------------
+// PASO 7: ACTUALIZAR ESTADO DE UNA TAREA AL MOVERLA
+//--------------------------------------------------------------
 
 function updateTaskStatus(id, columnId) {
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -142,6 +192,10 @@ function updateTaskStatus(id, columnId) {
         saveTask(task);
     }
 }
+
+//--------------------------------------------------------------
+// PASO 8: EDITAR Y ELIMINAR TAREAS
+//--------------------------------------------------------------
 
 let editingTaskId = null;
 
@@ -169,6 +223,10 @@ function deleteTask(id) {
     const taskElement = document.querySelector(`[data-id="${id}"]`);
     if (taskElement) taskElement.remove();
 }
+
+//--------------------------------------------------------------
+// PASO 9: FUNCIONES PARA MANEJAR SUBTAREAS
+//--------------------------------------------------------------
 
 function addSubtask(taskId, inputElement) {
     const text = inputElement.value.trim();
@@ -224,22 +282,30 @@ function deleteSubtask(taskId, subtaskId) {
     reloadTasks();
 }
 
+//--------------------------------------------------------------
+// PASO 10: ALERTA DE TAREAS VENCIDAS PENDIENTES
+//--------------------------------------------------------------
+
 function mostrarAlertasDeTareasVencidas() {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
 
-    const tareasAtrasadas = tasks.filter(task => {
+    const tareasAtrasadasPendientes = tasks.filter(task => {
         const fechaFin = new Date(task.endDate);
         fechaFin.setHours(0, 0, 0, 0);
-        return fechaFin < hoy;
+        return fechaFin < hoy && task.columnId !== 'done';
     });
 
-    if (tareasAtrasadas.length > 0) {
-        const lista = tareasAtrasadas.map(t => `• ${t.name} (Fin: ${t.endDate})`).join('\n');
-        alert(`⚠️ Tienes ${tareasAtrasadas.length} tarea(s) atrasada(s):\n\n${lista}`);
+    if (tareasAtrasadasPendientes.length > 0) {
+        const lista = tareasAtrasadasPendientes.map(t => `• ${t.name} (Fin: ${t.endDate})`).join('\n');
+        alert(`⚠️ Tienes ${tareasAtrasadasPendientes.length} tarea(s) pendientes y vencidas:\n\n${lista}`);
     }
 }
+
+//--------------------------------------------------------------
+// PASO FINAL: EJECUTAR AL CARGAR LA PÁGINA
+//--------------------------------------------------------------
 
 loadTasks();
 mostrarAlertasDeTareasVencidas();
