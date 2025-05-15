@@ -8,8 +8,9 @@
 <body>
     <div class="header">
         <img src="img/igiris.png" alt="Logo Kanban" class="kanban-logo"> 
-        <h1 class="h1-gris-oscuro" >Sistema Kanban</h1>
+        <h1 class="h1-gris-oscuro">Sistema Kanban</h1>
     </div>
+
     <div class="kanban-board">
         <div class="column" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>Por Hacer</h2>
@@ -19,21 +20,20 @@
 
         <div class="column" id="in-progress" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>En Progreso</h2>
-            <div class="task-container"></div> 
+            <div class="task-container"></div>
             <center><button onclick="openTaskModal()">+</button></center>
         </div>
 
         <div class="column" id="done" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>Hecho</h2>
-            <div class="task-container"></div> 
+            <div class="task-container"></div>
             <center><button onclick="openTaskModal()">+</button></center>
         </div>
     </div>
-    <script src="tasks.js"></script>
 
-
-    <div id="taskModal" style="display:none;">
-        <div>
+    <!-- MODAL -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
             <h3>Agregar Tarea</h3>
             <label>Nombre:</label>
             <input type="text" id="taskName">
@@ -45,10 +45,13 @@
             <input type="date" id="taskEndDate">
             <label>Responsable:</label>
             <input type="text" id="taskResponsible">
-            <button onclick="addTask()">Guardar</button>
-            <button onclick="closeTaskModal()">Cerrar</button>
+            <div class="modal-buttons">
+                <button class="save" onclick="addTask()">Guardar</button>
+                <button class="close" onclick="closeTaskModal()">Cerrar</button>
+            </div>
         </div>
-    </div>    
+    </div>
+
+    <script src="tasks.js"></script>
 </body>
 </html>
-
