@@ -1,5 +1,5 @@
 //--------------------------------------------------------------
-// PASO 1: FUNCIONES BÁSICAS PARA DRAG & DROP
+//  FUNCIONES BÁSICAS PARA DRAG & DROP
 //--------------------------------------------------------------
 
 // Permite soltar elementos en columnas
@@ -24,7 +24,7 @@ function drop(event) {
 }
 
 //--------------------------------------------------------------
-// PASO 2: ABRIR Y CERRAR EL FORMULARIO (MODAL) DE TAREA
+// ABRIR Y CERRAR EL FORMULARIO (MODAL) DE TAREA
 //--------------------------------------------------------------
 
 function openTaskModal() {
@@ -43,7 +43,7 @@ function closeTaskModal() {
 }
 
 //--------------------------------------------------------------
-// PASO 3: AGREGAR O EDITAR UNA TAREA
+// AGREGAR O EDITAR UNA TAREA
 //--------------------------------------------------------------
 
 function addTask() {
@@ -66,7 +66,7 @@ function addTask() {
 }
 
 //--------------------------------------------------------------
-// PASO 4: CREAR UNA TAREA EN EL DOM
+// CREAR UNA TAREA EN EL DOM
 //--------------------------------------------------------------
 
 function createTask(columnId, name, description, startDate, endDate, responsible, id, subtasks = []) {
@@ -125,9 +125,9 @@ function createTask(columnId, name, description, startDate, endDate, responsible
         contenidoTarea += `
             <ul class="subtask-list">${subtasksHTML}</ul>
             <input type="text" placeholder="Nueva subtarea..." onkeydown="if(event.key === 'Enter') addSubtask('${id}', this)">
-            <div class="task-actions">
-                <button class="circle-btn edit" onclick="editTask('${id}')">Editar</button>
-                <button class="circle-btn delete" onclick="deleteTask('${id}')">Eliminar</button>
+            <div class="task-actions" style="margin:5px;">
+                <button class="circle-btn edit" onclick="editTask('${id}')"><img src="img/editar.png" alt="Editar" style="width:15px;"></button>
+                <button class="circle-btn delete" onclick="deleteTask('${id}')"><img src="img/eliminar.png" alt="eliminar" style="width:15px;"></button>
             </div>
         `;
     }
@@ -140,7 +140,7 @@ function createTask(columnId, name, description, startDate, endDate, responsible
 }
 
 //--------------------------------------------------------------
-// PASO 5: GUARDAR UNA TAREA EN LOCALSTORAGE
+// GUARDAR UNA TAREA EN LOCALSTORAGE
 //--------------------------------------------------------------
 
 function saveTask(task) {
@@ -155,7 +155,7 @@ function saveTask(task) {
 }
 
 //--------------------------------------------------------------
-// PASO 6: CARGAR TODAS LAS TAREAS EN PANTALLA
+//  CARGAR TODAS LAS TAREAS EN PANTALLA
 //--------------------------------------------------------------
 
 function loadTasks() {
@@ -181,7 +181,7 @@ function reloadTasks() {
 }
 
 //--------------------------------------------------------------
-// PASO 7: ACTUALIZAR ESTADO DE UNA TAREA AL MOVERLA
+// ACTUALIZAR ESTADO DE UNA TAREA AL MOVERLA
 //--------------------------------------------------------------
 
 function updateTaskStatus(id, columnId) {
@@ -194,7 +194,7 @@ function updateTaskStatus(id, columnId) {
 }
 
 //--------------------------------------------------------------
-// PASO 8: EDITAR Y ELIMINAR TAREAS
+// EDITAR Y ELIMINAR TAREAS
 //--------------------------------------------------------------
 
 let editingTaskId = null;
@@ -225,7 +225,7 @@ function deleteTask(id) {
 }
 
 //--------------------------------------------------------------
-// PASO 9: FUNCIONES PARA MANEJAR SUBTAREAS
+// FUNCIONES PARA MANEJAR SUBTAREAS
 //--------------------------------------------------------------
 
 function addSubtask(taskId, inputElement) {
@@ -283,7 +283,7 @@ function deleteSubtask(taskId, subtaskId) {
 }
 
 //--------------------------------------------------------------
-// PASO 10: ALERTA DE TAREAS VENCIDAS PENDIENTES
+//  ALERTA DE TAREAS VENCIDAS PENDIENTES
 //--------------------------------------------------------------
 
 function mostrarAlertasDeTareasVencidas() {
